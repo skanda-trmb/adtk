@@ -522,14 +522,14 @@ class PersistAD(_TrainableUnivariateDetector):
         )
         self.pipe_.steps["sign_check"]["model"].set_params(
             high=(
-                0.0
+                self.higher_threshold
                 if self.side == "positive"
                 else (
                     float("inf") if self.side == "negative" else -float("inf")
                 )
             ),
             low=(
-                0.0
+                self.lower_threshold
                 if self.side == "negative"
                 else (
                     -float("inf") if self.side == "positive" else float("inf")

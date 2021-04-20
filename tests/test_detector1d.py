@@ -451,3 +451,36 @@ def test_autoregressive_ad_dataframe():
 
     a = model.fit_detect(df)
     pd.testing.assert_frame_equal(a, a_true, check_dtype=False)
+
+if __name__ == '__main__':
+    logins_per_week_filter_new = [20.539924073521295,
+         4.709207794178407,
+         10.567975521943765,
+         4.654008712203323,
+         12.540417874779518,
+         8.68124128274528,
+         14.510354653083763,
+         18.506005440002554,
+         8.653713996141803,
+         2.6067706565147417,
+         8.568764060326458,
+         6.497231646713441,
+         2.657897098432535,
+         2.4346225766375302,
+         0.6283913785856533,
+         0.2832893392222861,
+         0.5798709739436374,
+         0.6129681116308826,
+         1.1067186413836192,
+         1.409769359194367,
+         1.638155640892966]
+
+    from adtk.visualization import plot
+    from adtk.detector import PersistAD
+    from adtk.data import validate_series
+
+    s = validate_series(logins_per_week_filter_new)
+    persist_ad = PersistAD(c=0.5, side='negative', agg='median', lower_threshold=15.0)
+    persist_ad.window = 4
+    anomalies = persist_ad.fit_detect(s)
+    plot(s, anomaly=anomalies, anomaly_color='red')
