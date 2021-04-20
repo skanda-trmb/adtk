@@ -406,6 +406,14 @@ class PersistAD(_TrainableUnivariateDetector):
         Aggregation operation of the time window, either "mean" or "median".
         Default: "median".
 
+    lower_threshold: float, optional
+        Threshold below which a value is regarded anomaly. Default: None, i.e.
+        no threshold on lower side.
+
+    higher_threshold: float, optional
+        Threshold above which a value is regarded anomaly. Default: None, i.e.
+        no threshold on upper side.
+
     Attributes
     ----------
     pipe_: adtk.pipe.Pipenet
@@ -420,6 +428,8 @@ class PersistAD(_TrainableUnivariateDetector):
         side: str = "both",
         min_periods: Optional[int] = None,
         agg: str = "median",
+        lower_threshold: float = None,
+        higher_threshold: float = None
     ) -> None:
         self.pipe_ = Pipenet(
             {
@@ -450,7 +460,7 @@ class PersistAD(_TrainableUnivariateDetector):
                 "sign_check": {
                     "model": ThresholdAD(
                         high=(
-                            0.0
+                            higher_threshold
                             if side == "positive"
                             else (
                                 float("inf")
@@ -459,7 +469,7 @@ class PersistAD(_TrainableUnivariateDetector):
                             )
                         ),
                         low=(
-                            0.0
+                            lower_threshold
                             if side == "negative"
                             else (
                                 -float("inf")
@@ -482,6 +492,8 @@ class PersistAD(_TrainableUnivariateDetector):
         self.window = window
         self.min_periods = min_periods
         self.agg = agg
+        self.lower_threshold = lower_threshold
+        self.higher_threshold = higher_threshold
         self._sync_params()
 
     @property
